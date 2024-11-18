@@ -2,7 +2,7 @@ import requests
 import soundfile as sf
 import io
 
-url = "http://localhost:9234/miniomni"
+url = "http://localhost:9237/miniomni"
 audio_data, sample_rate = sf.read("en_sample.wav")
 data = {"sample_rate": sample_rate, "audio_data": audio_data.tolist()}
 
