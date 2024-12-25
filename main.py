@@ -6,6 +6,7 @@ import torchaudio
 from inference import OmniInference
 import tempfile
 import numpy as np
+import setproctitle
 
 client = None
 device = None
@@ -45,6 +46,7 @@ def hangup():
 
 
 if  __name__ == "__main__":
+    setproctitle.setproctitle("miniomni-web-inference")
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=9234)
     parser.add_argument("--api-name", type=str, default="miniomni")
