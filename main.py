@@ -1,4 +1,8 @@
-from ml_web_inference import expose, Request, StreamingResponse, get_proper_device, get_model_size_mb
+from ml_web_inference import (
+    expose,
+    Request,
+    StreamingResponse,
+)
 import torch
 import io
 import argparse
@@ -10,14 +14,16 @@ import setproctitle
 
 client = None
 device = None
-model_size_mb = 3500
+
 
 async def inference(request: Request) -> StreamingResponse:
     data = await request.json()
     sample_rate = data["sample_rate"]
     audio_data = data["audio_data"]
     with tempfile.NamedTemporaryFile(suffix=".wav") as f:
-        torchaudio.save(f, torch.tensor(audio_data).unsqueeze(0), sample_rate, format="wav")
+        torchaudio.save(
+            f, torch.tensor(audio_data).unsqueeze(0), sample_rate, format="wav"
+        )
         chunk_generator = client.run_AT_batch_stream(f.name)
         chunks = []
         for chunk in chunk_generator:
@@ -35,9 +41,9 @@ async def inference(request: Request) -> StreamingResponse:
 
 def init():
     global client, device
-    device = get_proper_device(model_size_mb)
-    client = OmniInference('./checkpoint', f"cuda:{device}")
+    client = OmniInference("./checkpoint", "cuda")
     client.warm_up()
+
 
 def hangup():
     global client
@@ -45,7 +51,7 @@ def hangup():
     torch.cuda.empty_cache()
 
 
-if  __name__ == "__main__":
+if __name__ == "__main__":
     setproctitle.setproctitle("miniomni-web-inference")
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=9234)
