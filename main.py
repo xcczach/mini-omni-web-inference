@@ -41,7 +41,8 @@ async def inference(request: Request) -> StreamingResponse:
 
 def init():
     global client, device
-    client = OmniInference("./checkpoint", "cuda")
+    device = "cuda"
+    client = OmniInference("./checkpoint", device)
     client.warm_up()
 
 
